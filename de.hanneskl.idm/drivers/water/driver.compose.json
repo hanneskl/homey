@@ -1,0 +1,48 @@
+{
+  "name": {
+    "en": "Water heater"
+  },
+  "class": "heater",
+  "capabilities": [
+    "measure_power",
+    "alarm_generic",
+    "measure_power_produced",
+    "target_temperature",
+    "measure_temperature.top",
+    "measure_temperature.bottom",
+    "measure_efficiency"
+  ],
+  "capabilitiesOptions": {
+    "alarm_generic": { "title": { "en": "Heating" } },
+    "measure_temperature.top": { "title": { "en": "Temperature Top" } },
+    "measure_temperature.bottom": { "title": { "en": "Temperature Bottom" } },
+    "target_temperature": { 
+      "min": 10,
+      "max": 70,
+      "step": 5
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan" 
+  ],
+  "images": {
+    "small": "/drivers/water/assets/images/icons8-spa.svg",
+    "large": "/drivers/water/assets/images/icons8-spa.svg",
+    "xlarge": "/drivers/water/assets/images/icons8-spa.svg"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": { "next": "add_devices" },
+      "options": { "singular": true }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

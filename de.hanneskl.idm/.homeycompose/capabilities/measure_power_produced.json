@@ -1,0 +1,10 @@
+{
+    "type": "number",
+    "title": { "en": "Power produced" },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false,
+    "decimals": 1,
+    "unit": "W",
+    "icon": "/assets/images/icons8-power-plant.svg"
+  }

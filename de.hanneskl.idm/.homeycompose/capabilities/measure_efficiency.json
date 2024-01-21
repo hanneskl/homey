@@ -1,0 +1,9 @@
+{
+    "type": "number",
+    "title": { "en": "Efficiency" },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false,
+    "decimals": 1,
+    "icon": "/assets/images/icons8-gauge.svg"
+  }

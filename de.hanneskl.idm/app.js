@@ -2,16 +2,16 @@
 
 const Homey = require('homey');
 
-class MyApp extends Homey.App {
+class IDMApp extends Homey.App {
 
   /**
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('MyApp has been initialized');
+    this.log('IDMApp has been initialized');
     this.log("Hello World");
   }
 
 }
 
-module.exports = MyApp;
+module.exports = IDMApp;
