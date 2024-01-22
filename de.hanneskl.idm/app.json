@@ -40,8 +40,7 @@
         "target_temperature",
         "measure_temperature",
         "measure_temperature.bottom",
-        "measure_efficiency",
-        "test"
+        "measure_efficiency"
       ],
       "capabilitiesOptions": {
         "alarm_generic": {
@@ -126,18 +125,6 @@
       "decimals": 0,
       "units": "W",
       "icon": "/assets/images/icons8-power-plant.svg",
-      "insights": true
-    },
-    "test": {
-      "type": "number",
-      "title": {
-        "en": "Test"
-      },
-      "uiComponent": "sensor",
-      "getable": true,
-      "setable": true,
-      "decimals": 0,
-      "icon": "/assets/images/icons8-gauge.svg",
       "insights": true
     }
   }

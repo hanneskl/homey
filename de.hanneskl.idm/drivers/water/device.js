@@ -1,7 +1,7 @@
 'use strict';
 
 const { Device } = require('homey');
-const fetch = require('node-fetch');
+//const fetch = require('node-fetch');
 
 class WaterHeater extends Device {
 
@@ -10,10 +10,6 @@ class WaterHeater extends Device {
    */
   async onInit() {
     this.log('WaterHeater has been initialized');
-
-    this.registerCapabilityListener("test", async (value) => {
-      this.log("trying to set test to ", value);
-    });
 
     this.registerCapabilityListener("target_temperature", async (value) => {
       this.log("trying to set target_temperature", value);

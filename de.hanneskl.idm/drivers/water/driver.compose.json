@@ -10,8 +10,7 @@
     "target_temperature",
     "measure_temperature",
     "measure_temperature.bottom",
-    "measure_efficiency",
-    "test"
+    "measure_efficiency"
   ],
   "capabilitiesOptions": {
     "alarm_generic": { "title": { "en": "Heating" } },
