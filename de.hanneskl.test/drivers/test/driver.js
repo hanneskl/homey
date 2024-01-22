@@ -2,13 +2,13 @@
 
 const { Driver } = require('homey');
 
-class WaterHeaterDriver extends Driver {
+class MyDriver extends Driver {
 
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('WaterHeaterDriver has been initialized');
+    this.log('MyDriver has been initialized');
   }
 
   /**
@@ -17,17 +17,16 @@ class WaterHeaterDriver extends Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
-    this.log("onPairListDevices called");
     return [
       {
-      name: 'Water heater',
-      data: {
-           id: 'my-water-heater-123',
-         },
+        name: 'My Device',
+        data: {
+          id: 'my-device-123',
+        }
       }
     ];
   }
 
 }
 
-module.exports = WaterHeaterDriver;
+module.exports = MyDriver;

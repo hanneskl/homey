@@ -8,18 +8,29 @@
     "alarm_generic",
     "measure_power_produced",
     "target_temperature",
-    "measure_temperature.top",
+    "measure_temperature",
     "measure_temperature.bottom",
-    "measure_efficiency"
+    "measure_efficiency",
+    "test"
   ],
   "capabilitiesOptions": {
     "alarm_generic": { "title": { "en": "Heating" } },
-    "measure_temperature.top": { "title": { "en": "Temperature Top" } },
-    "measure_temperature.bottom": { "title": { "en": "Temperature Bottom" } },
-    "target_temperature": { 
+    "measure_temperature": { 
+      "title": { "en": "Temperature Top" },
       "min": 10,
-      "max": 70,
-      "step": 5
+      "max": 80,
+      "step": 1,
+      "decimals": 0
+    },
+    "measure_temperature.bottom": { 
+      "title": { "en": "Temperature Bottom" },
+      "decimals": 0
+    },
+    "target_temperature": { 
+      "min": 30,
+      "max": 50,
+      "step": 1,
+      "decimals": 0
     }
   },
   "platforms": [
@@ -29,9 +40,9 @@
     "lan" 
   ],
   "images": {
-    "small": "/drivers/water/assets/images/icons8-spa.svg",
-    "large": "/drivers/water/assets/images/icons8-spa.svg",
-    "xlarge": "/drivers/water/assets/images/icons8-spa.svg"
+    "small": "/drivers/water/assets/images/small.png",
+    "large": "/drivers/water/assets/images/large.png",
+    "xlarge": "/drivers/water/assets/images/xlarge.png"
   },
   "pair": [
     {

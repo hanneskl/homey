@@ -10,6 +10,7 @@
   "name": {
     "en": "IDM"
   },
+  "brandColor": "#242424",
   "description": {
     "en": "Adds support for IDM heatpump."
   },
@@ -37,9 +38,10 @@
         "alarm_generic",
         "measure_power_produced",
         "target_temperature",
-        "measure_temperature.top",
+        "measure_temperature",
         "measure_temperature.bottom",
-        "measure_efficiency"
+        "measure_efficiency",
+        "test"
       ],
       "capabilitiesOptions": {
         "alarm_generic": {
@@ -47,20 +49,26 @@
             "en": "Heating"
           }
         },
-        "measure_temperature.top": {
+        "measure_temperature": {
           "title": {
             "en": "Temperature Top"
-          }
+          },
+          "min": 10,
+          "max": 80,
+          "step": 1,
+          "decimals": 0
         },
         "measure_temperature.bottom": {
           "title": {
             "en": "Temperature Bottom"
-          }
+          },
+          "decimals": 0
         },
         "target_temperature": {
-          "min": 10,
-          "max": 70,
-          "step": 5
+          "min": 30,
+          "max": 50,
+          "step": 1,
+          "decimals": 0
         }
       },
       "platforms": [
@@ -70,9 +78,9 @@
         "lan"
       ],
       "images": {
-        "small": "/drivers/water/assets/images/icons8-spa.svg",
-        "large": "/drivers/water/assets/images/icons8-spa.svg",
-        "xlarge": "/drivers/water/assets/images/icons8-spa.svg"
+        "small": "/drivers/water/assets/images/small.png",
+        "large": "/drivers/water/assets/images/large.png",
+        "xlarge": "/drivers/water/assets/images/xlarge.png"
       },
       "pair": [
         {
@@ -102,20 +110,35 @@
       "uiComponent": "sensor",
       "getable": true,
       "setable": false,
-      "decimals": 1,
-      "icon": "/assets/images/icons8-gauge.svg"
+      "decimals": 0,
+      "icon": "/assets/images/icons8-gauge.svg",
+      "insights": true,
+      "units": "%"
     },
     "measure_power_produced": {
       "type": "number",
       "title": {
-        "en": "Power produced"
+        "en": "Power Produced"
       },
       "uiComponent": "sensor",
       "getable": true,
       "setable": false,
-      "decimals": 1,
-      "unit": "W",
-      "icon": "/assets/images/icons8-power-plant.svg"
+      "decimals": 0,
+      "units": "W",
+      "icon": "/assets/images/icons8-power-plant.svg",
+      "insights": true
+    },
+    "test": {
+      "type": "number",
+      "title": {
+        "en": "Test"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": true,
+      "decimals": 0,
+      "icon": "/assets/images/icons8-gauge.svg",
+      "insights": true
     }
   }
 }

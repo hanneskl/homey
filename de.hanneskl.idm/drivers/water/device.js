@@ -11,9 +11,14 @@ class WaterHeater extends Device {
   async onInit() {
     this.log('WaterHeater has been initialized');
 
+    this.registerCapabilityListener("test", async (value) => {
+      this.log("trying to set test to ", value);
+    });
+
     this.registerCapabilityListener("target_temperature", async (value) => {
+      this.log("trying to set target_temperature", value);
       try {
-        const response = await fetch("http://192.168.87.97/data/heatpump.php", {
+        await fetch("http://192.168.87.97/data/heatpump.php", {
           method: "PUT",
           headers: {
             "Cookie": "MYIDM=e3e6deb750243ca87c1781e1e09d0b9d",
@@ -37,6 +42,48 @@ class WaterHeater extends Device {
         this.log('Error: ', error)
       }
     });
+
+    // Get data once
+    this.pullData();
+
+    // Then get data every 10 seconds
+    setInterval(() => {
+      this.pullData();
+    }, 10000);
+  }
+
+  async pullData() {
+    try {
+      fetch("http://192.168.87.97/data/heatpump.php", {
+        headers: {
+          "Cookie": "MYIDM=e3e6deb750243ca87c1781e1e09d0b9d",
+          "CSRF-Token": "65a8cea3c7734"
+        }
+      }).then((response) => response.json())
+        .then((data) => {
+          this.log('Response: ', data);
+
+          const isOn = data.system.sysmode == 4;
+          const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
+          const measure_power_produced = isOn ? parseFloat(data.system.q.value) * 1000 : 0;
+          const measure_efficiency = isOn ? measure_power_produced / measure_power * 100 : null;
+          const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
+          const target_temperature = isOn ? parseFloat(data.freshwater.temperatures.desired.value) : measure_temperature_bottom;
+          const measure_temperature = parseFloat(data.freshwater.temperatures.frwa2);
+
+          this.log("target_temperature", target_temperature);
+
+          this.setCapabilityValue('alarm_generic', isOn).catch(this.error);
+          this.setCapabilityValue('measure_power', measure_power).catch(this.error);
+          this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
+          this.setCapabilityValue('target_temperature', target_temperature).catch(this.error);
+          this.setCapabilityValue('measure_temperature', measure_temperature).catch(this.error);
+          this.setCapabilityValue('measure_temperature.bottom', measure_temperature_bottom).catch(this.error);
+          this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);
+        });
+    } catch (error) {
+      this.log('Error: ', error)
+    }
   }
 
   /**
