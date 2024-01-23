@@ -1,0 +1,52 @@
+{
+  "name": {
+    "en": "UnderfloorHeater"
+  },
+  "class": "heater",
+  "capabilities": [
+    "alarm_generic",
+    "measure_power",
+    "measure_power_produced",
+    "measure_efficiency",
+    "measure_temperature",
+    "measure_temperature_outside",
+    "measure_temperature_feed_in",
+    "measure_temperature_feed_out"
+  ],
+  "capabilitiesOptions": {
+    "alarm_generic": {
+      "title": {
+        "en": "Heating"
+      }
+    },
+    "measure_temperature": {
+      "title": {
+        "en": "Temperature tank"
+      },
+      "decimals": 0
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "images": {
+    "small": "/drivers/waterheater/assets/images/small.png",
+    "large": "/drivers/waterheater/assets/images/large.png",
+    "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": { "next": "add_devices" },
+      "options": { "singular": true }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Temperature feed in"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "decimals": 0,
+  "units": "°C",
+  "icon": "/assets/images/icons8-thermometer-down.svg",
+  "insights": true
+}

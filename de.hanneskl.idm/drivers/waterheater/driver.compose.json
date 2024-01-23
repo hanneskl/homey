@@ -4,28 +4,31 @@
   },
   "class": "heater",
   "capabilities": [
-    "measure_power",
     "alarm_generic",
+    "measure_power",
     "measure_power_produced",
+    "measure_efficiency",
     "target_temperature",
     "measure_temperature",
-    "measure_temperature.bottom",
-    "measure_efficiency"
+    "measure_temperature_top",
+    "measure_temperature_bottom"
   ],
   "capabilitiesOptions": {
-    "alarm_generic": { "title": { "en": "Heating" } },
-    "measure_temperature": { 
-      "title": { "en": "Temperature Top" },
+    "alarm_generic": {
+      "title": {
+        "en": "Heating"
+      }
+    },
+    "measure_temperature": {
+      "title": {
+        "en": "Temperature"
+      },
       "min": 10,
       "max": 80,
       "step": 1,
       "decimals": 0
     },
-    "measure_temperature.bottom": { 
-      "title": { "en": "Temperature Bottom" },
-      "decimals": 0
-    },
-    "target_temperature": { 
+    "target_temperature": {
       "min": 30,
       "max": 50,
       "step": 1,
@@ -36,19 +39,23 @@
     "local"
   ],
   "connectivity": [
-    "lan" 
+    "lan"
   ],
   "images": {
-    "small": "/drivers/water/assets/images/small.png",
-    "large": "/drivers/water/assets/images/large.png",
-    "xlarge": "/drivers/water/assets/images/xlarge.png"
+    "small": "/drivers/waterheater/assets/images/small.png",
+    "large": "/drivers/waterheater/assets/images/large.png",
+    "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
   },
   "pair": [
     {
       "id": "list_devices",
       "template": "list_devices",
-      "navigation": { "next": "add_devices" },
-      "options": { "singular": true }
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": true
+      }
     },
     {
       "id": "add_devices",

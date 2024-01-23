@@ -1,6 +1,6 @@
 {
     "type": "number",
-    "title": { "en": "Power Produced" },
+    "title": { "en": "Power produced" },
     "uiComponent": "sensor",
     "getable": true,
     "setable": false,

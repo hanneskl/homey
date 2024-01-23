@@ -1,0 +1,39 @@
+{
+  "name": {
+    "en": "Solar panel"
+  },
+  "class": "solarpanel",
+  "capabilities": [
+    "measure_battery",
+    "measure_power_grid",
+    "measure_power_house",
+    "measure_power_heatpump"
+  ],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "images": {
+    "small": "/drivers/waterheater/assets/images/small.png",
+    "large": "/drivers/waterheater/assets/images/large.png",
+    "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": true
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

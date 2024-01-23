@@ -30,46 +30,15 @@
   "drivers": [
     {
       "name": {
-        "en": "Water heater"
+        "en": "Solar panel"
       },
-      "class": "heater",
+      "class": "solarpanel",
       "capabilities": [
-        "measure_power",
-        "alarm_generic",
-        "measure_power_produced",
-        "target_temperature",
-        "measure_temperature",
-        "measure_temperature.bottom",
-        "measure_efficiency"
+        "measure_battery",
+        "measure_power_grid",
+        "measure_power_house",
+        "measure_power_heatpump"
       ],
-      "capabilitiesOptions": {
-        "alarm_generic": {
-          "title": {
-            "en": "Heating"
-          }
-        },
-        "measure_temperature": {
-          "title": {
-            "en": "Temperature Top"
-          },
-          "min": 10,
-          "max": 80,
-          "step": 1,
-          "decimals": 0
-        },
-        "measure_temperature.bottom": {
-          "title": {
-            "en": "Temperature Bottom"
-          },
-          "decimals": 0
-        },
-        "target_temperature": {
-          "min": 30,
-          "max": 50,
-          "step": 1,
-          "decimals": 0
-        }
-      },
       "platforms": [
         "local"
       ],
@@ -77,9 +46,9 @@
         "lan"
       ],
       "images": {
-        "small": "/drivers/water/assets/images/small.png",
-        "large": "/drivers/water/assets/images/large.png",
-        "xlarge": "/drivers/water/assets/images/xlarge.png"
+        "small": "/drivers/waterheater/assets/images/small.png",
+        "large": "/drivers/waterheater/assets/images/large.png",
+        "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
       },
       "pair": [
         {
@@ -97,7 +66,135 @@
           "template": "add_devices"
         }
       ],
-      "id": "water"
+      "id": "solarpanel"
+    },
+    {
+      "name": {
+        "en": "UnderfloorHeater"
+      },
+      "class": "heater",
+      "capabilities": [
+        "alarm_generic",
+        "measure_power",
+        "measure_power_produced",
+        "measure_efficiency",
+        "measure_temperature",
+        "measure_temperature_outside",
+        "measure_temperature_feed_in",
+        "measure_temperature_feed_out"
+      ],
+      "capabilitiesOptions": {
+        "alarm_generic": {
+          "title": {
+            "en": "Heating"
+          }
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Temperature tank"
+          },
+          "decimals": 0
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/waterheater/assets/images/small.png",
+        "large": "/drivers/waterheater/assets/images/large.png",
+        "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "underfloorheater"
+    },
+    {
+      "name": {
+        "en": "Water heater"
+      },
+      "class": "heater",
+      "capabilities": [
+        "alarm_generic",
+        "measure_power",
+        "measure_power_produced",
+        "measure_efficiency",
+        "target_temperature",
+        "measure_temperature",
+        "measure_temperature.bottom"
+      ],
+      "capabilitiesOptions": {
+        "alarm_generic": {
+          "title": {
+            "en": "Heating"
+          }
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Temperature top"
+          },
+          "min": 10,
+          "max": 80,
+          "step": 1,
+          "decimals": 0
+        },
+        "measure_temperature.bottom": {
+          "title": {
+            "en": "Temperature bottom"
+          },
+          "decimals": 0
+        },
+        "target_temperature": {
+          "min": 30,
+          "max": 50,
+          "step": 1,
+          "decimals": 0
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/waterheater/assets/images/small.png",
+        "large": "/drivers/waterheater/assets/images/large.png",
+        "xlarge": "/drivers/waterheater/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "waterheater"
     }
   ],
   "capabilities": {
@@ -114,10 +211,49 @@
       "insights": true,
       "units": "%"
     },
+    "measure_power_grid": {
+      "type": "number",
+      "title": {
+        "en": "Consumption from grid"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "W",
+      "icon": "/assets/images/icons8-pole.svg",
+      "insights": true
+    },
+    "measure_power_heatpump": {
+      "type": "number",
+      "title": {
+        "en": "Consumption heatpump"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "W",
+      "icon": "/assets/images/icons8-heating-room.svg",
+      "insights": true
+    },
+    "measure_power_house": {
+      "type": "number",
+      "title": {
+        "en": "Consumption house"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "W",
+      "icon": "/assets/images/icons8-wall-socket.svg",
+      "insights": true
+    },
     "measure_power_produced": {
       "type": "number",
       "title": {
-        "en": "Power Produced"
+        "en": "Power produced"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -125,6 +261,45 @@
       "decimals": 0,
       "units": "W",
       "icon": "/assets/images/icons8-power-plant.svg",
+      "insights": true
+    },
+    "measure_temperature_feed_in": {
+      "type": "number",
+      "title": {
+        "en": "Temperature feed in"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "°C",
+      "icon": "/assets/images/icons8-thermometer-down.svg",
+      "insights": true
+    },
+    "measure_temperature_feed_out": {
+      "type": "number",
+      "title": {
+        "en": "Temperature feed out"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "°C",
+      "icon": "/assets/images/icons8-thermometer-up.svg",
+      "insights": true
+    },
+    "measure_temperature_outside": {
+      "type": "number",
+      "title": {
+        "en": "Temperature air outside"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "°C",
+      "icon": "/assets/images/icons8-temperature-outside.svg",
       "insights": true
     }
   }

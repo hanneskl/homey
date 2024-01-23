@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Temperature air outside"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "decimals": 0,
+  "units": "°C",
+  "icon": "/assets/images/icons8-temperature-outside.svg",
+  "insights": true
+}

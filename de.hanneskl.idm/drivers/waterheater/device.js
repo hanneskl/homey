@@ -9,6 +9,7 @@ class WaterHeater extends Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    
     this.log('WaterHeater has been initialized');
 
     this.registerCapabilityListener("target_temperature", async (value) => {
@@ -63,18 +64,18 @@ class WaterHeater extends Device {
           const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
           const measure_power_produced = isOn ? parseFloat(data.system.q.value) * 1000 : 0;
           const measure_efficiency = isOn ? measure_power_produced / measure_power * 100 : null;
-          const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
           const target_temperature = isOn ? parseFloat(data.freshwater.temperatures.desired.value) : measure_temperature_bottom;
           const measure_temperature = parseFloat(data.freshwater.temperatures.frwa2);
-
-          this.log("target_temperature", target_temperature);
-
+          const measure_temperature_top = measure_temperature;
+          const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
+          
           this.setCapabilityValue('alarm_generic', isOn).catch(this.error);
           this.setCapabilityValue('measure_power', measure_power).catch(this.error);
           this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
           this.setCapabilityValue('target_temperature', target_temperature).catch(this.error);
           this.setCapabilityValue('measure_temperature', measure_temperature).catch(this.error);
-          this.setCapabilityValue('measure_temperature.bottom', measure_temperature_bottom).catch(this.error);
+          this.setCapabilityValue('measure_temperature_bottom', measure_temperature_top).catch(this.error);
+          this.setCapabilityValue('measure_temperature_top', measure_temperature_bottom).catch(this.error);
           this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);
         });
     } catch (error) {
