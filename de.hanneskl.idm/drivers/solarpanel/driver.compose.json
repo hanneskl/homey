@@ -4,14 +4,23 @@
   },
   "class": "solarpanel",
   "capabilities": [
+    "measure_power",
     "measure_battery",
+    "measure_power.battery",
     "measure_power_grid",
     "measure_power_house",
     "measure_power_heatpump"
   ],
-  "platforms": [
-    "local"
-  ],
+  "capabilitiesOptions": {
+    "measure_power.battery": {
+      "title": {
+        "en": "Battery charging"
+      }
+    }
+  },
+  "energy": {
+    "batteries": ["INTERNAL"]
+  },
   "connectivity": [
     "lan"
   ],

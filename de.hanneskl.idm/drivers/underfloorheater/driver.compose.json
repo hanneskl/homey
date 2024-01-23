@@ -4,20 +4,21 @@
   },
   "class": "heater",
   "capabilities": [
-    "alarm_generic",
     "measure_power",
     "measure_power_produced",
     "measure_efficiency",
     "measure_temperature",
     "measure_temperature_outside",
     "measure_temperature_feed_in",
-    "measure_temperature_feed_out"
+    "measure_temperature_feed_out",
+    "onoff"
   ],
   "capabilitiesOptions": {
-    "alarm_generic": {
+    "onoff": {
       "title": {
         "en": "Heating"
-      }
+      },
+      "getable": false
     },
     "measure_temperature": {
       "title": {

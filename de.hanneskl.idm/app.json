@@ -34,14 +34,25 @@
       },
       "class": "solarpanel",
       "capabilities": [
+        "measure_power",
         "measure_battery",
+        "measure_power.battery",
         "measure_power_grid",
         "measure_power_house",
         "measure_power_heatpump"
       ],
-      "platforms": [
-        "local"
-      ],
+      "capabilitiesOptions": {
+        "measure_power.battery": {
+          "title": {
+            "en": "Battery charging"
+          }
+        }
+      },
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
       "connectivity": [
         "lan"
       ],
@@ -74,20 +85,21 @@
       },
       "class": "heater",
       "capabilities": [
-        "alarm_generic",
         "measure_power",
         "measure_power_produced",
         "measure_efficiency",
         "measure_temperature",
         "measure_temperature_outside",
         "measure_temperature_feed_in",
-        "measure_temperature_feed_out"
+        "measure_temperature_feed_out",
+        "onoff"
       ],
       "capabilitiesOptions": {
-        "alarm_generic": {
+        "onoff": {
           "title": {
             "en": "Heating"
-          }
+          },
+          "getable": false
         },
         "measure_temperature": {
           "title": {
@@ -131,33 +143,28 @@
       },
       "class": "heater",
       "capabilities": [
-        "alarm_generic",
+        "onoff",
         "measure_power",
         "measure_power_produced",
         "measure_efficiency",
         "target_temperature",
         "measure_temperature",
-        "measure_temperature.bottom"
+        "measure_temperature_top",
+        "measure_temperature_bottom"
       ],
       "capabilitiesOptions": {
-        "alarm_generic": {
+        "onoff": {
           "title": {
             "en": "Heating"
           }
         },
         "measure_temperature": {
           "title": {
-            "en": "Temperature top"
+            "en": "Temperature"
           },
           "min": 10,
           "max": 80,
           "step": 1,
-          "decimals": 0
-        },
-        "measure_temperature.bottom": {
-          "title": {
-            "en": "Temperature bottom"
-          },
           "decimals": 0
         },
         "target_temperature": {
@@ -263,10 +270,23 @@
       "icon": "/assets/images/icons8-power-plant.svg",
       "insights": true
     },
+    "measure_temperature_bottom": {
+      "type": "number",
+      "title": {
+        "en": "Temperature tank bottom"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "°C",
+      "icon": "/assets/images/icons8-thermometer-down.svg",
+      "insights": true
+    },
     "measure_temperature_feed_in": {
       "type": "number",
       "title": {
-        "en": "Temperature feed in"
+        "en": "Temperature going in"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -279,7 +299,7 @@
     "measure_temperature_feed_out": {
       "type": "number",
       "title": {
-        "en": "Temperature feed out"
+        "en": "Temperature coming out"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -300,6 +320,19 @@
       "decimals": 0,
       "units": "°C",
       "icon": "/assets/images/icons8-temperature-outside.svg",
+      "insights": true
+    },
+    "measure_temperature_top": {
+      "type": "number",
+      "title": {
+        "en": "Temperature tank top"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "decimals": 0,
+      "units": "°C",
+      "icon": "/assets/images/icons8-thermometer-up.svg",
       "insights": true
     }
   }

@@ -12,8 +12,7 @@ class WaterHeater extends Device {
     
     this.log('WaterHeater has been initialized');
 
-    this.registerCapabilityListener("target_temperature", async (value) => {
-      this.log("trying to set target_temperature", value);
+    this.registerCapabilityListener("onoff", async (isOn) => {  
       try {
         await fetch("http://192.168.87.97/data/heatpump.php", {
           method: "PUT",
@@ -23,7 +22,28 @@ class WaterHeater extends Device {
           },
           body: JSON.stringify({
             "freshwater": {
-              "mode": 2,
+              "mode": isOn ? 2 : 0,
+            }
+          })
+        }).then((response) => response.text())
+          .then((text) => {
+            this.log('Response: ', text);
+          });
+      } catch (error) {
+        this.log('Error: ', error)
+      }
+    });
+
+    this.registerCapabilityListener("target_temperature", async (value) => {
+      try {
+        await fetch("http://192.168.87.97/data/heatpump.php", {
+          method: "PUT",
+          headers: {
+            "Cookie": "MYIDM=e3e6deb750243ca87c1781e1e09d0b9d",
+            "CSRF-Token": "65a8cea3c7734"
+          },
+          body: JSON.stringify({
+            "freshwater": {
               "temperatures": {
                 "desired": {
                   "value": value
@@ -58,24 +78,22 @@ class WaterHeater extends Device {
         }
       }).then((response) => response.json())
         .then((data) => {
-          this.log('Response: ', data);
-
           const isOn = data.system.sysmode == 4;
           const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
-          const measure_power_produced = isOn ? parseFloat(data.system.q.value) * 1000 : 0;
+          const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;
           const measure_efficiency = isOn ? measure_power_produced / measure_power * 100 : null;
-          const target_temperature = isOn ? parseFloat(data.freshwater.temperatures.desired.value) : measure_temperature_bottom;
-          const measure_temperature = parseFloat(data.freshwater.temperatures.frwa2);
-          const measure_temperature_top = measure_temperature;
+          const measure_temperature_top = parseFloat(data.freshwater.temperatures.frwa2);
           const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
+          const measure_temperature = measure_temperature_top;
+          const target_temperature = parseFloat(data.freshwater.temperatures.desired.value);
           
-          this.setCapabilityValue('alarm_generic', isOn).catch(this.error);
+          this.setCapabilityValue('onoff', isOn).catch(this.error);
           this.setCapabilityValue('measure_power', measure_power).catch(this.error);
           this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
           this.setCapabilityValue('target_temperature', target_temperature).catch(this.error);
           this.setCapabilityValue('measure_temperature', measure_temperature).catch(this.error);
-          this.setCapabilityValue('measure_temperature_bottom', measure_temperature_top).catch(this.error);
-          this.setCapabilityValue('measure_temperature_top', measure_temperature_bottom).catch(this.error);
+          this.setCapabilityValue('measure_temperature_bottom', measure_temperature_bottom).catch(this.error);
+          this.setCapabilityValue('measure_temperature_top', measure_temperature_top).catch(this.error);
           this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);
         });
     } catch (error) {

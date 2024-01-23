@@ -1,13 +1,13 @@
 {
   "type": "number",
   "title": {
-    "en": "Temperature bottom"
+    "en": "Temperature tank top"
   },
   "uiComponent": "sensor",
   "getable": true,
   "setable": false,
   "decimals": 0,
   "units": "°C",
-  "icon": "/assets/images/icons8-thermometer-down.svg",
+  "icon": "/assets/images/icons8-thermometer-up.svg",
   "insights": true
 }

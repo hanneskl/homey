@@ -30,13 +30,15 @@ class SolarPanel extends Device {
         }
       }).then((response) => response.json())
         .then((data) => {
-          this.log('Response: ', data);
-
+          const measure_power = data.pv.act ? 1000 * parseFloat(data.pv.act) : 0;
+          const measure_power_battery = data.pv.batt ? 1000 * parseFloat(data.pv.batt) * (data.pv.battdir == 1 ? 1 : -1) : 0;
           const measure_battery = parseFloat(data.pv.battload);
-          const measure_power_grid = 1000 * parseFloat(data.pv.evu) * data.pv.evudir + -1;
+          const measure_power_grid = 1000 * parseFloat(data.pv.evu) * (data.pv.evudir == 1 ? 1 : -1);
           const measure_power_house = 1000 * parseFloat(data.pv.house);
           const measure_power_heatpump = 1000 * parseFloat(data.pv.hp);
-          
+
+          this.setCapabilityValue('measure_power', measure_power).catch(this.error);
+          this.setCapabilityValue('measure_power.battery', measure_power_battery).catch(this.error);
           this.setCapabilityValue('measure_battery', measure_battery).catch(this.error);
           this.setCapabilityValue('measure_power_grid', measure_power_grid).catch(this.error);
           this.setCapabilityValue('measure_power_house', measure_power_house).catch(this.error);

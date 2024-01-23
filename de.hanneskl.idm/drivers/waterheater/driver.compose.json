@@ -4,7 +4,7 @@
   },
   "class": "heater",
   "capabilities": [
-    "alarm_generic",
+    "onoff",
     "measure_power",
     "measure_power_produced",
     "measure_efficiency",
@@ -14,7 +14,7 @@
     "measure_temperature_bottom"
   ],
   "capabilitiesOptions": {
-    "alarm_generic": {
+    "onoff": {
       "title": {
         "en": "Heating"
       }

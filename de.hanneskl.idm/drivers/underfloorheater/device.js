@@ -19,6 +19,28 @@ class UnderfloorHeater extends Device {
     setInterval(() => {
       this.pullData();
     }, 10000);
+
+    this.registerCapabilityListener("onoff", async (isOn) => {  
+      try {
+        await fetch("http://192.168.87.97/data/heatpump.php", {
+          method: "PUT",
+          headers: {
+            "Cookie": "MYIDM=e3e6deb750243ca87c1781e1e09d0b9d",
+            "CSRF-Token": "65a8cea3c7734"
+          },
+          body: JSON.stringify({
+            "system": {
+              "sysmode": isOn ? 1 : 0,
+            }
+          })
+        }).then((response) => response.text())
+          .then((text) => {
+            this.log('Response: ', text);
+          });
+      } catch (error) {
+        this.log('Error: ', error)
+      }
+    });
   }
 
   async pullData() {
@@ -30,11 +52,9 @@ class UnderfloorHeater extends Device {
         }
       }).then((response) => response.json())
         .then((data) => {
-          this.log('Response: ', data);
-
           const isOn = data.system.sysmode == 1;
           const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
-          const measure_power_produced = isOn ? parseFloat(data.system.q.value) * 1000 : 0;
+          const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;
           const measure_efficiency = isOn ? measure_power_produced / measure_power * 100 : null;
 
           const measure_temperature = parseFloat(data.system.temperatures.heat);
@@ -42,7 +62,7 @@ class UnderfloorHeater extends Device {
           const measure_temperature_feed_in = parseFloat(data.system.temperatures.hpin);
           const measure_temperature_feed_out = parseFloat(data.system.temperatures.hpout);
 
-          this.setCapabilityValue('alarm_generic', isOn).catch(this.error);
+          this.setCapabilityValue('onoff', isOn).catch(this.error);
           this.setCapabilityValue('measure_power', measure_power).catch(this.error);
           this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
           this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);

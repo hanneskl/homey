@@ -1,7 +1,7 @@
 {
   "type": "number",
   "title": {
-    "en": "Temperature feed out"
+    "en": "Temperature coming out"
   },
   "uiComponent": "sensor",
   "getable": true,
