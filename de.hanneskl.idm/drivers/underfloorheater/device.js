@@ -55,7 +55,7 @@ class UnderfloorHeater extends Device {
           const isOn = data.system.sysmode == 1;
           const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
           const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;
-          const measure_efficiency = isOn ? measure_power_produced / measure_power * 100 : null;
+          const measure_efficiency = measure_power > 1000 && measure_power_produced > 1000 ? measure_power_produced / measure_power * 100 : null;
 
           const measure_temperature = parseFloat(data.system.temperatures.heat);
           const measure_temperature_outside = parseFloat(data.system.temperatures.srcin);
