@@ -20,13 +20,15 @@ class UnderfloorHeater extends Device {
       this.pullData();
     }, 10000);
 
+    const settings = this.getSettings();
+    
     this.registerCapabilityListener("onoff", async (isOn) => {  
       try {
         await fetch("http://192.168.87.97/data/heatpump.php", {
           method: "PUT",
           headers: {
-            "Cookie": this.homey.settings.get('cookie'),
-            "CSRF-Token": this.homey.settings.get('csfr-token')
+            "Cookie": settings.cookie,
+            "CSRF-Token": settings.csfr-token
           },
           body: JSON.stringify({
             "system": {
@@ -44,11 +46,14 @@ class UnderfloorHeater extends Device {
   }
 
   async pullData() {
+
+    const settings = this.getSettings();
+    
     try {
       fetch("http://192.168.87.97/data/heatpump.php", {
         headers: {
-          "Cookie": this.homey.settings.get('cookie'),
-          "CSRF-Token": this.homey.settings.get('csfr-token')
+          "Cookie": settings.cookie,
+          "CSRF-Token": settings.csfr-token
         }
       }).then((response) => response.json())
         .then((data) => {

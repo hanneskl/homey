@@ -44,5 +44,33 @@
       "id": "add_devices",
       "template": "add_devices"
     }
+  ],
+  "settings": [
+    {
+      "id": "cookie",
+      "type": "text",
+      "label": {
+        "en": "Cookie"
+      },
+      "description": {
+        "en": "Get the cookie from http://192.168.87.97"
+      },
+      "placeholder": {
+        "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
+      }
+    },
+    {
+      "id": "csfr-token",
+      "type": "text",
+      "label": {
+        "en": "CSFR-Token"
+      },
+      "description": {
+        "en": "Get the csfr token from http://192.168.87.97"
+      },
+      "placeholder": {
+        "en": "e.g., 68593c363abca"
+      }
+    }
   ]
 }

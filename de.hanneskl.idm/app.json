@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "de.hanneskl.idm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -27,34 +27,6 @@
     "name": "Hannes Kleist",
     "email": "hannes@kleist.com"
   },
-  "settings": [
-    {
-      "id": "cookie",
-      "type": "text",
-      "label": {
-        "en": "Cookie"
-      },
-      "description": {
-        "en": "Get the cookie from http://192.168.87.97"
-      },
-      "placeholder": {
-        "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
-      }
-    },
-    {
-      "id": "csfr-token",
-      "type": "text",
-      "label": {
-        "en": "CSFR-Token"
-      },
-      "description": {
-        "en": "Get the csfr token from http://192.168.87.97"
-      },
-      "placeholder": {
-        "en": "e.g., 68593c363abca"
-      }
-    }
-  ],
   "drivers": [
     {
       "name": {
@@ -103,6 +75,34 @@
         {
           "id": "add_devices",
           "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "cookie",
+          "type": "text",
+          "label": {
+            "en": "Cookie"
+          },
+          "description": {
+            "en": "Get the cookie from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
+          }
+        },
+        {
+          "id": "csfr-token",
+          "type": "text",
+          "label": {
+            "en": "CSFR-Token"
+          },
+          "description": {
+            "en": "Get the csfr token from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., 68593c363abca"
+          }
         }
       ],
       "id": "solarpanel"
@@ -161,6 +161,34 @@
         {
           "id": "add_devices",
           "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "cookie",
+          "type": "text",
+          "label": {
+            "en": "Cookie"
+          },
+          "description": {
+            "en": "Get the cookie from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
+          }
+        },
+        {
+          "id": "csfr-token",
+          "type": "text",
+          "label": {
+            "en": "CSFR-Token"
+          },
+          "description": {
+            "en": "Get the csfr token from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., 68593c363abca"
+          }
         }
       ],
       "id": "underfloorheater"
@@ -227,6 +255,34 @@
         {
           "id": "add_devices",
           "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "cookie",
+          "type": "text",
+          "label": {
+            "en": "Cookie"
+          },
+          "description": {
+            "en": "Get the cookie from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
+          }
+        },
+        {
+          "id": "csfr-token",
+          "type": "text",
+          "label": {
+            "en": "CSFR-Token"
+          },
+          "description": {
+            "en": "Get the csfr token from http://192.168.87.97"
+          },
+          "placeholder": {
+            "en": "e.g., 68593c363abca"
+          }
         }
       ],
       "id": "waterheater"
