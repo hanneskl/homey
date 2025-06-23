@@ -25,8 +25,8 @@ class SolarPanel extends Device {
     try {
       fetch("http://192.168.87.97/data/heatpump.php", {
         headers: {
-          "Cookie": "MYIDM=e4540360db23118a8db5d9512e1b171c",
-          "CSRF-Token": "66cf2d1c82ab1"
+          "Cookie": this.homey.settings.get('cookie'),
+          "CSRF-Token": this.homey.settings.get('csfr-token')
         }
       }).then((response) => response.json())
         .then((data) => {
