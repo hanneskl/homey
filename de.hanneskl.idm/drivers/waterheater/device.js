@@ -15,13 +15,12 @@ class WaterHeater extends Device {
     this.registerCapabilityListener("onoff", async (isOn) => {  
       
       const settings = this.getSettings();
-      
       try {
         await fetch("http://192.168.87.97/data/heatpump.php", {
           method: "PUT",
           headers: {
             "Cookie": settings.cookie,
-            "CSRF-Token": settings.csfr-token
+            "CSRF-Token": settings.csfr
           },
           body: JSON.stringify({
             "freshwater": {
@@ -46,7 +45,7 @@ class WaterHeater extends Device {
           method: "PUT",
           headers: {
             "Cookie": settings.cookie,
-            "CSRF-Token": settings.csfr-token
+            "CSRF-Token": settings.csfr
           },
           body: JSON.stringify({
             "freshwater": {
@@ -78,15 +77,16 @@ class WaterHeater extends Device {
   async pullData() {
     
     const settings = this.getSettings();
-    
+
     try {
       fetch("http://192.168.87.97/data/heatpump.php", {
         headers: {
           "Cookie": settings.cookie,
-          "CSRF-Token": settings.csfr-token
+          "CSRF-Token": settings.csfr
         }
       }).then((response) => response.json())
       .then((data) => {
+        this.log(data);
         const isOn = data.system.sysmode == 4;
         const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
         const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;

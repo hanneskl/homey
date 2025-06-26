@@ -8,8 +8,7 @@ class IDMApp extends Homey.App {
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('IDMApp has been initialized');
-    this.log("Hello World");
+    this.log('IDM app has been initialized');
   }
 
 }

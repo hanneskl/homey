@@ -24,14 +24,16 @@ class SolarPanel extends Device {
   async pullData() {
 
     const settings = this.getSettings();
+    
     try {
       fetch("http://192.168.87.97/data/heatpump.php", {
         headers: {
           "Cookie": settings.cookie,
-          "CSRF-Token": settings.csfr-token
+          "CSRF-Token": settings.csfr
         }
       }).then((response) => response.json())
         .then((data) => {
+          this.log(data);
           const measure_power = data.pv.act ? 1000 * parseFloat(data.pv.act) : 0;
           const measure_power_battery = data.pv.batt ? 1000 * parseFloat(data.pv.batt) * (data.pv.battdir == 1 ? 1 : -1) : 0;
           const measure_battery = parseFloat(data.pv.battload);

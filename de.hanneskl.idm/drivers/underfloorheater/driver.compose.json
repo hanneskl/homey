@@ -65,7 +65,7 @@
       }
     },
     {
-      "id": "csfr-token",
+      "id": "csfr",
       "type": "text",
       "label": {
         "en": "CSFR-Token"
