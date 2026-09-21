@@ -3,68 +3,152 @@
 const DEFAULT_HOST = '192.168.87.84';
 const TIMEOUT_MS = 8000;
 
-/**
- * Calls the IDM heatpump API using the device's settings (host, cookie, csfr).
- * Throws on network errors, timeouts and non-2xx responses. GET requests also
- * throw on non-JSON bodies (e.g. the login page returned when cookie/csfr have
- * expired); other methods return the response text.
- */
-async function idmRequest(device, { method = 'GET', body } = {}) {
-  const settings = device.getSettings();
-  const host = (settings.host || DEFAULT_HOST).trim();
-
-  const response = await fetch(`http://${host}/data/heatpump.php`, {
-    method,
-    headers: {
-      "Cookie": settings.cookie,
-      "CSRF-Token": settings.csfr
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(TIMEOUT_MS)
-  });
-
-  const text = await response.text();
-  if (!response.ok) {
-    throw new Error(`IDM at ${host} returned HTTP ${response.status}`);
-  }
-
-  // Write requests just get logged, only reads need to be parsed
-  if (method !== 'GET') {
-    return text;
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    throw new Error(`IDM at ${host} did not return JSON – cookie/CSFR token probably expired`);
-  }
-}
+class SessionError extends Error {}
 
 /**
- * Polls the IDM every 10 seconds and hands the data to onData.
- * Marks the device unavailable while the IDM can't be reached.
+ * Talks to the internal API of the IDM web interface (/data/heatpump.php).
+ *
+ * The API needs the MYIDM session cookie plus a CSRF token. With a PIN the
+ * client logs in by itself (POST /index.php, token is embedded in the returned
+ * HTML) and logs in again whenever the IDM answers "invalid csrf token", e.g.
+ * after it restarted. Without a PIN the manually copied cookie/csfr are used.
  */
-function startPolling(device, onData) {
-  const poll = async () => {
-    try {
-      const data = await idmRequest(device);
-      try {
-        onData(data);
-      } catch (error) {
-        // Usually an error object instead of measurements, so show what came back
-        throw new Error(`Unexpected response from IDM: ${JSON.stringify(data).slice(0, 300)}`);
-      }
-      if (!device.getAvailable()) {
-        await device.setAvailable();
-      }
-    } catch (error) {
-      device.error('Polling failed:', error.cause || error.message);
-      await device.setUnavailable(error.message).catch(device.error);
+class IdmClient {
+
+  constructor({ log, error }) {
+    this.log = log;
+    this.error = error;
+    this.config = {};
+    this.session = null;
+  }
+
+  configure({ host, pin, cookie, csfr }) {
+    const config = {
+      host: (host || DEFAULT_HOST).trim(),
+      pin: (pin || '').trim(),
+      cookie: (cookie || '').trim(),
+      csfr: (csfr || '').trim(),
+    };
+    if (JSON.stringify(config) !== JSON.stringify(this.config)) {
+      this.config = config;
+      this.session = null;
     }
-  };
+  }
 
-  poll();
-  return device.homey.setInterval(poll, 10000);
+  get host() {
+    return this.config.host || DEFAULT_HOST;
+  }
+
+  /**
+   * GET returns the parsed JSON, other methods return the response text.
+   * Throws on network errors, timeouts, non-2xx responses and failed logins.
+   */
+  async request({ method = 'GET', body } = {}) {
+    try {
+      return await this.requestOnce({ method, body });
+    } catch (error) {
+      // Session expired (e.g. IDM restarted): log in again and retry once
+      if (error instanceof SessionError && this.config.pin) {
+        this.log('IDM session expired, logging in again');
+        this.session = null;
+        return this.requestOnce({ method, body });
+      }
+      throw error;
+    }
+  }
+
+  async requestOnce({ method, body }) {
+    const session = await this.getSession();
+
+    const response = await fetch(`http://${this.host}/data/heatpump.php`, {
+      method,
+      headers: {
+        "Cookie": session.cookie,
+        "CSRF-Token": session.csrf
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(TIMEOUT_MS)
+    });
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`IDM at ${this.host} returned HTTP ${response.status}`);
+    }
+    if (text.includes('invalid csrf token')) {
+      throw new SessionError(this.config.pin
+        ? 'IDM rejected the session'
+        : 'Cookie/CSFR token expired – enter the PIN in the device settings to log in automatically');
+    }
+
+    // Write requests just get logged, only reads need to be parsed
+    if (method !== 'GET') {
+      return text;
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      throw new SessionError(`IDM at ${this.host} did not return JSON`);
+    }
+  }
+
+  async getSession() {
+    if (this.session) {
+      return this.session;
+    }
+    if (this.config.pin) {
+      // Concurrent requests share one login instead of logging each other out
+      this.loginPromise = this.loginPromise || this.login().finally(() => {
+        this.loginPromise = null;
+      });
+      this.session = await this.loginPromise;
+    } else {
+      this.session = { cookie: this.config.cookie, csrf: this.config.csfr };
+    }
+    return this.session;
+  }
+
+  async login() {
+    const cookies = new Map();
+    const collectCookies = (response) => {
+      for (const header of response.headers.getSetCookie()) {
+        const [pair] = header.split(';');
+        const [name, ...value] = pair.split('=');
+        cookies.set(name.trim(), value.join('='));
+      }
+    };
+    const cookieHeader = () => [...cookies].map(([name, value]) => `${name}=${value}`).join('; ');
+
+    let response = await fetch(`http://${this.host}/index.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ pin: this.config.pin }),
+      redirect: 'manual',
+      signal: AbortSignal.timeout(TIMEOUT_MS)
+    });
+    collectCookies(response);
+
+    // Follow redirects by hand so the session cookie is sent along
+    for (let i = 0; i < 3 && response.status >= 300 && response.status < 400; i++) {
+      const location = new URL(response.headers.get('location'), `http://${this.host}/`);
+      response = await fetch(location, {
+        headers: { 'Cookie': cookieHeader() },
+        redirect: 'manual',
+        signal: AbortSignal.timeout(TIMEOUT_MS)
+      });
+      collectCookies(response);
+    }
+
+    const html = await response.text();
+    const match = html.match(/csrf_token\s*=\s*"([^"]+)"/);
+    if (!match || !cookies.has('MYIDM')) {
+      throw new Error(`Login at IDM ${this.host} failed – check the PIN`);
+    }
+
+    this.log('Logged in at IDM', this.host);
+    return { cookie: cookieHeader(), csrf: match[1] };
+  }
+
 }
 
-module.exports = { idmRequest, startPolling, DEFAULT_HOST };
+module.exports = { IdmClient, DEFAULT_HOST };

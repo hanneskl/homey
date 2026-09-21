@@ -1,7 +1,6 @@
 'use strict';
 
 const { Device } = require('homey');
-const { idmRequest, startPolling } = require('../../lib/idm');
 
 class UnderfloorHeater extends Device {
 
@@ -12,12 +11,12 @@ class UnderfloorHeater extends Device {
 
     this.log('UnderfloorHeater has been initialized');
 
-    // Get data now and then every 10 seconds
-    startPolling(this, (data) => this.updateCapabilities(data));
+    // Receive data from the app's shared poll
+    this.homey.app.registerDevice(this, (data) => this.updateCapabilities(data));
 
     // Errors are thrown on purpose so Homey shows that switching failed
     this.registerCapabilityListener("onoff", async (isOn) => {
-      const text = await idmRequest(this, {
+      const text = await this.homey.app.client.request({
         method: "PUT",
         body: {
           "system": {
@@ -68,6 +67,7 @@ class UnderfloorHeater extends Device {
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log('UnderfloorHeater settings where changed');
+    this.homey.app.onDeviceSettingsChanged(newSettings);
   }
 
   /**
@@ -84,6 +84,7 @@ class UnderfloorHeater extends Device {
    */
   async onDeleted() {
     this.log('UnderfloorHeater has been deleted');
+    this.homey.app.unregisterDevice(this);
   }
 
 }

@@ -1,7 +1,6 @@
 'use strict';
 
 const { Device } = require('homey');
-const { idmRequest, startPolling } = require('../../lib/idm');
 
 class WaterHeater extends Device {
 
@@ -14,7 +13,7 @@ class WaterHeater extends Device {
 
     // Errors are thrown on purpose so Homey shows that the change failed
     this.registerCapabilityListener("onoff", async (isOn) => {
-      const text = await idmRequest(this, {
+      const text = await this.homey.app.client.request({
         method: "PUT",
         body: {
           "freshwater": {
@@ -26,7 +25,7 @@ class WaterHeater extends Device {
     });
 
     this.registerCapabilityListener("target_temperature", async (value) => {
-      const text = await idmRequest(this, {
+      const text = await this.homey.app.client.request({
         method: "PUT",
         body: {
           "freshwater": {
@@ -41,8 +40,8 @@ class WaterHeater extends Device {
       this.log('Response: ', text);
     });
 
-    // Get data now and then every 10 seconds
-    startPolling(this, (data) => this.updateCapabilities(data));
+    // Receive data from the app's shared poll
+    this.homey.app.registerDevice(this, (data) => this.updateCapabilities(data));
   }
 
   updateCapabilities(data) {
@@ -82,6 +81,7 @@ class WaterHeater extends Device {
   */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log('WaterHeater settings where changed');
+    this.homey.app.onDeviceSettingsChanged(newSettings);
   }
   
   /**
@@ -98,6 +98,7 @@ class WaterHeater extends Device {
   */
   async onDeleted() {
     this.log('WaterHeater has been deleted');
+    this.homey.app.unregisterDevice(this);
   }
   
 }

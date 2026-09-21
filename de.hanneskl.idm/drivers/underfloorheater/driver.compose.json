@@ -67,13 +67,24 @@
       }
     },
     {
+      "id": "pin",
+      "type": "password",
+      "label": {
+        "en": "PIN"
+      },
+      "value": "",
+      "hint": {
+        "en": "PIN of the IDM web interface. With a PIN the app logs in by itself, also after the IDM restarted. Use the same settings on all IDM devices."
+      }
+    },
+    {
       "id": "cookie",
       "type": "text",
       "label": {
-        "en": "Cookie"
+        "en": "Cookie (optional)"
       },
       "description": {
-        "en": "Get the cookie from the IDM web interface"
+        "en": "Only needed without PIN: get the cookie from the IDM web interface"
       },
       "placeholder": {
         "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
@@ -83,10 +94,10 @@
       "id": "csfr",
       "type": "text",
       "label": {
-        "en": "CSFR-Token"
+        "en": "CSFR-Token (optional)"
       },
       "description": {
-        "en": "Get the csfr token from the IDM web interface"
+        "en": "Only needed without PIN: get the csfr token from the IDM web interface"
       },
       "placeholder": {
         "en": "e.g., 68593c363abca"

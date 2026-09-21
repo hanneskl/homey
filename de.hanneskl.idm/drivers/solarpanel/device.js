@@ -1,7 +1,6 @@
 'use strict';
 
 const { Device } = require('homey');
-const { startPolling } = require('../../lib/idm');
 
 class SolarPanel extends Device {
 
@@ -12,8 +11,8 @@ class SolarPanel extends Device {
 
     this.log('SolarPanel has been initialized');
 
-    // Get data now and then every 10 seconds
-    startPolling(this, (data) => this.updateCapabilities(data));
+    // Receive data from the app's shared poll
+    this.homey.app.registerDevice(this, (data) => this.updateCapabilities(data));
   }
 
   updateCapabilities(data) {
@@ -49,6 +48,7 @@ class SolarPanel extends Device {
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log('SolarPanel settings where changed');
+    this.homey.app.onDeviceSettingsChanged(newSettings);
   }
 
   /**
@@ -65,6 +65,7 @@ class SolarPanel extends Device {
    */
   async onDeleted() {
     this.log('SolarPanel has been deleted');
+    this.homey.app.unregisterDevice(this);
   }
 
 }
