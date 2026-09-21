@@ -19,7 +19,9 @@
     }
   },
   "energy": {
-    "batteries": ["INTERNAL"]
+    "batteries": [
+      "INTERNAL"
+    ]
   },
   "connectivity": [
     "lan"
@@ -47,13 +49,24 @@
   ],
   "settings": [
     {
+      "id": "host",
+      "type": "text",
+      "label": {
+        "en": "IDM address"
+      },
+      "value": "192.168.87.84",
+      "hint": {
+        "en": "IP address or hostname of the IDM heatpump"
+      }
+    },
+    {
       "id": "cookie",
       "type": "text",
       "label": {
         "en": "Cookie"
       },
       "description": {
-        "en": "Get the cookie from http://192.168.87.97"
+        "en": "Get the cookie from the IDM web interface"
       },
       "placeholder": {
         "en": "e.g., MYIDM=3bdc1db6227e097f2b459823667fb668"
@@ -66,7 +79,7 @@
         "en": "CSFR-Token"
       },
       "description": {
-        "en": "Get the csfr token from http://192.168.87.97"
+        "en": "Get the csfr token from the IDM web interface"
       },
       "placeholder": {
         "en": "e.g., 68593c363abca"

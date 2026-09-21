@@ -1,113 +1,68 @@
 'use strict';
 
 const { Device } = require('homey');
-//const fetch = require('node-fetch');
+const { idmRequest, startPolling } = require('../../lib/idm');
 
 class WaterHeater extends Device {
-  
+
   /**
   * onInit is called when the device is initialized.
   */
   async onInit() {
-    
+
     this.log('WaterHeater has been initialized');
-    
-    this.registerCapabilityListener("onoff", async (isOn) => {  
-      
-      const settings = this.getSettings();
-      try {
-        await fetch("http://192.168.87.97/data/heatpump.php", {
-          method: "PUT",
-          headers: {
-            "Cookie": settings.cookie,
-            "CSRF-Token": settings.csfr
-          },
-          body: JSON.stringify({
-            "freshwater": {
-              "mode": isOn ? 2 : 0,
-            }
-          })
-        }).then((response) => response.text())
-        .then((text) => {
-          this.log('Response: ', text);
-        });
-      } catch (error) {
-        this.log('Error: ', error)
-      }
+
+    // Errors are thrown on purpose so Homey shows that the change failed
+    this.registerCapabilityListener("onoff", async (isOn) => {
+      const text = await idmRequest(this, {
+        method: "PUT",
+        body: {
+          "freshwater": {
+            "mode": isOn ? 2 : 0,
+          }
+        }
+      });
+      this.log('Response: ', text);
     });
-    
+
     this.registerCapabilityListener("target_temperature", async (value) => {
-      
-      const settings = this.getSettings();
-      
-      try {
-        await fetch("http://192.168.87.97/data/heatpump.php", {
-          method: "PUT",
-          headers: {
-            "Cookie": settings.cookie,
-            "CSRF-Token": settings.csfr
-          },
-          body: JSON.stringify({
-            "freshwater": {
-              "temperatures": {
-                "desired": {
-                  "value": value
-                }
+      const text = await idmRequest(this, {
+        method: "PUT",
+        body: {
+          "freshwater": {
+            "temperatures": {
+              "desired": {
+                "value": value
               }
             }
-          })
-        }).then((response) => response.text())
-        .then((text) => {
-          this.log('Response: ', text);
-        });
-      } catch (error) {
-        this.log('Error: ', error)
-      }
-    });
-    
-    // Get data once
-    this.pullData();
-    
-    // Then get data every 10 seconds
-    setInterval(() => {
-      this.pullData();
-    }, 10000);
-  }
-  
-  async pullData() {
-    
-    const settings = this.getSettings();
-
-    try {
-      fetch("http://192.168.87.97/data/heatpump.php", {
-        headers: {
-          "Cookie": settings.cookie,
-          "CSRF-Token": settings.csfr
+          }
         }
-      }).then((response) => response.json())
-      .then((data) => {
-        this.log(data);
-        const isOn = data.system.sysmode == 4;
-        const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
-        const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;
-        const measure_efficiency = measure_power > 1000 && measure_power_produced > 1000 ? measure_power_produced / measure_power * 100 : null;
-        const measure_temperature_top = parseFloat(data.freshwater.temperatures.frwa2);
-        const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
-        const measure_temperature = measure_temperature_top;
-        const target_temperature = parseFloat(data.freshwater.temperatures.desired.value);
-        
-        this.setCapabilityValue('onoff', isOn).catch(this.error);
-        this.setCapabilityValue('measure_power', measure_power).catch(this.error);
-        this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
-        this.setCapabilityValue('target_temperature', target_temperature).catch(this.error);
-        this.setCapabilityValue('measure_temperature', measure_temperature).catch(this.error);
-        this.setCapabilityValue('measure_temperature_bottom', measure_temperature_bottom).catch(this.error);
-        this.setCapabilityValue('measure_temperature_top', measure_temperature_top).catch(this.error);
-        this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);
       });
-    } catch (error) {
-      this.log('Error: ', error)
-    }
+      this.log('Response: ', text);
+    });
+
+    // Get data now and then every 10 seconds
+    startPolling(this, (data) => this.updateCapabilities(data));
+  }
+
+  updateCapabilities(data) {
+    const isOn = data.system.sysmode == 4;
+    const measure_power = isOn ? parseFloat(data.pv.hp) * 1000 : 0;
+    const measure_power_produced = isOn && data.system.q ? parseFloat(data.system.q.value) * 1000 : 0;
+    const measure_efficiency = measure_power > 1000 && measure_power_produced > 1000 ? measure_power_produced / measure_power * 100 : null;
+    const measure_temperature_top = parseFloat(data.freshwater.temperatures.frwa2);
+    const measure_temperature_bottom = parseFloat(data.freshwater.temperatures.frwa1);
+    const measure_temperature = measure_temperature_top;
+    const target_temperature = parseFloat(data.freshwater.temperatures.desired.value);
+
+    this.setCapabilityValue('onoff', isOn).catch(this.error);
+    this.setCapabilityValue('measure_power', measure_power).catch(this.error);
+    this.setCapabilityValue('measure_power_produced', measure_power_produced).catch(this.error);
+    this.setCapabilityValue('target_temperature', target_temperature).catch(this.error);
+    this.setCapabilityValue('measure_temperature', measure_temperature).catch(this.error);
+    this.setCapabilityValue('measure_temperature_bottom', measure_temperature_bottom).catch(this.error);
+    this.setCapabilityValue('measure_temperature_top', measure_temperature_top).catch(this.error);
+    this.setCapabilityValue('measure_efficiency', measure_efficiency).catch(this.error);
   }
   
   /**
